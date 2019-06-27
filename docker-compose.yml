@@ -1,0 +1,28 @@
+# docker stack deploy --compose-file=docker-compose.yml test
+version: '3'
+
+services:
+  test_server:
+    image: jwilder/whoami
+    networks:
+      - swarm_test_network
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == swarmtest1
+  test_client:
+    image: ehazlett/docker-demo
+    networks:
+      - swarm_test_network
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == swarmtest2
+
+networks:
+  swarm_test_network:
+    external: true
